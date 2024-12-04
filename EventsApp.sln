@@ -1,0 +1,87 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventsApp", "EventsApp\EventsApp.csproj", "{59171042-12D3-4B6E-8D0A-680D460CB7FF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{559F2720-AB79-4B38-A61F-B5CE32AEE397}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Application", "Application", "{4C3C2DB6-1281-4AF5-A9AD-5019E6BD19FC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{5B82C639-E19D-4377-BD23-AA39956321A6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{3BD9F0DD-5D8E-4810-B4A6-3E923FB1C3A6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Events.Domain", "Events.Domain\Events.Domain.csproj", "{297124A1-622C-43B2-91B6-08963AB93E7E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Events.Persistence", "Events.Persistence\Events.Persistence.csproj", "{DC3995A8-BB98-4304-B873-11D5308C977B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Events.Authentications", "Events.Authentications\Events.Authentications.csproj", "{378B415A-6862-4170-9E1F-1976426F857F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Events.DTOs", "Events.DTOs\Events.DTOs.csproj", "{F40F940F-CE36-4D77-99DD-44F094C21D20}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Events.Mappers", "Events.Mappers\Events.Mappers.csproj", "{E0EB30A4-7395-408E-93FE-90A210333F25}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Events.ValidationRules", "ValidationRules\Events.ValidationRules.csproj", "{A6BB5438-6EB3-4E92-88B0-B651A6031729}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{2F2EE809-C198-496B-8749-210FF35C2E80}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EventsApp.Tests", "EventsApp.Tests\EventsApp.Tests.csproj", "{06C74BC4-0354-4AB1-B198-AA9137830906}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{59171042-12D3-4B6E-8D0A-680D460CB7FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59171042-12D3-4B6E-8D0A-680D460CB7FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59171042-12D3-4B6E-8D0A-680D460CB7FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59171042-12D3-4B6E-8D0A-680D460CB7FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{297124A1-622C-43B2-91B6-08963AB93E7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{297124A1-622C-43B2-91B6-08963AB93E7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{297124A1-622C-43B2-91B6-08963AB93E7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{297124A1-622C-43B2-91B6-08963AB93E7E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC3995A8-BB98-4304-B873-11D5308C977B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC3995A8-BB98-4304-B873-11D5308C977B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC3995A8-BB98-4304-B873-11D5308C977B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC3995A8-BB98-4304-B873-11D5308C977B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{378B415A-6862-4170-9E1F-1976426F857F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{378B415A-6862-4170-9E1F-1976426F857F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{378B415A-6862-4170-9E1F-1976426F857F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{378B415A-6862-4170-9E1F-1976426F857F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F40F940F-CE36-4D77-99DD-44F094C21D20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F40F940F-CE36-4D77-99DD-44F094C21D20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F40F940F-CE36-4D77-99DD-44F094C21D20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F40F940F-CE36-4D77-99DD-44F094C21D20}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0EB30A4-7395-408E-93FE-90A210333F25}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0EB30A4-7395-408E-93FE-90A210333F25}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0EB30A4-7395-408E-93FE-90A210333F25}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0EB30A4-7395-408E-93FE-90A210333F25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6BB5438-6EB3-4E92-88B0-B651A6031729}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6BB5438-6EB3-4E92-88B0-B651A6031729}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6BB5438-6EB3-4E92-88B0-B651A6031729}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6BB5438-6EB3-4E92-88B0-B651A6031729}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06C74BC4-0354-4AB1-B198-AA9137830906}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06C74BC4-0354-4AB1-B198-AA9137830906}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06C74BC4-0354-4AB1-B198-AA9137830906}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06C74BC4-0354-4AB1-B198-AA9137830906}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{59171042-12D3-4B6E-8D0A-680D460CB7FF} = {5B82C639-E19D-4377-BD23-AA39956321A6}
+		{297124A1-622C-43B2-91B6-08963AB93E7E} = {559F2720-AB79-4B38-A61F-B5CE32AEE397}
+		{DC3995A8-BB98-4304-B873-11D5308C977B} = {3BD9F0DD-5D8E-4810-B4A6-3E923FB1C3A6}
+		{378B415A-6862-4170-9E1F-1976426F857F} = {3BD9F0DD-5D8E-4810-B4A6-3E923FB1C3A6}
+		{F40F940F-CE36-4D77-99DD-44F094C21D20} = {4C3C2DB6-1281-4AF5-A9AD-5019E6BD19FC}
+		{E0EB30A4-7395-408E-93FE-90A210333F25} = {4C3C2DB6-1281-4AF5-A9AD-5019E6BD19FC}
+		{A6BB5438-6EB3-4E92-88B0-B651A6031729} = {4C3C2DB6-1281-4AF5-A9AD-5019E6BD19FC}
+		{06C74BC4-0354-4AB1-B198-AA9137830906} = {2F2EE809-C198-496B-8749-210FF35C2E80}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {54CD4867-C2D5-4D2B-B27C-504950C318B7}
+	EndGlobalSection
+EndGlobal

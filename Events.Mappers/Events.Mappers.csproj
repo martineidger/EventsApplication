@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Events.Authentications\Events.Authentications.csproj" />
+    <ProjectReference Include="..\Events.Domain\Events.Domain.csproj" />
+    <ProjectReference Include="..\Events.DTOs\Events.DTOs.csproj" />
+    <ProjectReference Include="..\Events.Persistence\Events.Persistence.csproj" />
+  </ItemGroup>
+
+</Project>
