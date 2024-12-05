@@ -55,7 +55,7 @@ namespace EventsApp.Tests.ModuleTests
             // Arrange
             var model = new AuhorizationModel { Email = "test@example.com", Password = "Password123!" };
             var tokenRequest = new GetTokenRequestModel { Email = testUser.Email, Role = testUser.Role, Id = testUser.Id };
-            var tokens = ("accessToken", "refreshToken");
+            var tokens = new TokenResponse { AccessToken = "accessToken", RefreshToken = "refershToken"};
 
             _mockMapper.Setup(m => m.Map<GetTokenRequestModel>(testUser)).Returns(tokenRequest);
             _mockTokenService.Setup(t => t.GenerateTokens(tokenRequest)).Returns(tokens);
@@ -64,8 +64,8 @@ namespace EventsApp.Tests.ModuleTests
             var result = _userRepository.Login(model);
 
             // Assert
-            Assert.Equal(tokens.Item1, result.accessToken);
-            Assert.Equal(tokens.Item2, result.refreshToken);
+            Assert.Equal(tokens.AccessToken, result.AccessToken);
+            Assert.Equal(tokens.RefreshToken, result.RefreshToken);
         }
 
         [Fact]

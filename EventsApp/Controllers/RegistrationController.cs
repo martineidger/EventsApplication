@@ -67,23 +67,7 @@ namespace EventsApp.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(User))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult RefreshToken([FromBody] string refreshToken)
-        {
-            /*var handler = new JwtSecurityTokenHandler();
-            var userId = 0;
-
-            if (handler.CanReadToken(refreshToken))
-            {
-                var jwtTokenObj = handler.ReadJwtToken(refreshToken);
-                var idClaim = jwtTokenObj.Claims.FirstOrDefault(c => c.Type == "nameid");
-                if (idClaim != null)
-                {
-                    userId = Convert.ToInt32(idClaim.Value);
-                }
-                else
-                {
-                    throw new Exception("Invalid refresh token: there are no user whith such claims");
-                }
-            }*/
+        { 
             byte[] bytes = Convert.FromBase64String(refreshToken);
             string jsonString = Encoding.UTF8.GetString(bytes);
 
@@ -101,8 +85,8 @@ namespace EventsApp.Controllers
                     Role = tUser.Role
                 });
 
-            _unitOfWork.UserRepo.SetRefreshToken(newTokens.refreshToken, tUser.Email);
-            return Ok(new { AccessToken = newTokens.accessToken, RefreshToken = newTokens.refreshToken });
+            _unitOfWork.UserRepo.SetRefreshToken(newTokens.RefreshToken, tUser.Email);
+            return Ok(new { AccessToken = newTokens.AccessToken, RefreshToken = newTokens.RefreshToken });
         }
         #endregion
 
@@ -115,12 +99,6 @@ namespace EventsApp.Controllers
         {
             if (user == null)
                 return BadRequest("User cannot be null");
-
-            /*var validationResult = _regValidator.Validate(user);
-            if (!validationResult.IsValid)
-            {
-                return BadRequest(validationResult.Errors);
-            }*/
 
             if (!_unitOfWork.UserRepo.Register(user))
                 return BadRequest("Such user already exists");
@@ -139,20 +117,14 @@ namespace EventsApp.Controllers
             if (user == null)
                 return BadRequest("User cannot be null");
 
-           /* var validationResult = _loginValidator.Validate(user);
-            if (!validationResult.IsValid)
-            {
-                return BadRequest(validationResult.Errors);
-            }*/
-
             var tokens = _unitOfWork.UserRepo.Login(user);
-            if (tokens == (null, null))
+            if (tokens == null)
                 return Unauthorized("Invalid username or password");
 
-            _unitOfWork.UserRepo.SetRefreshToken(tokens.refreshToken, user.Email);
-            SetAccessTokenCookie(tokens.accessToken);
+            _unitOfWork.UserRepo.SetRefreshToken(tokens.RefreshToken, user.Email);
+            SetAccessTokenCookie(tokens.AccessToken);
 
-            return Ok(new { AccesToken = tokens.accessToken , RefreshToken = tokens.refreshToken});
+            return Ok(new { AccesToken = tokens.AccessToken , RefreshToken = tokens.RefreshToken});
         }
 
         #endregion

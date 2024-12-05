@@ -24,7 +24,7 @@ public class TokenService : ITokenService
         this.tokenHandler = new JwtSecurityTokenHandler();
     }
     
-    public (string accessToken, string refreshToken) GenerateTokens(GetTokenRequestModel model)
+    public TokenResponse GenerateTokens(GetTokenRequestModel model)
     {
         //////access
         var key = System.Text.Encoding.ASCII.GetBytes(secretKey);
@@ -58,10 +58,10 @@ public class TokenService : ITokenService
         string base64Token = Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(tokenString));
         Console.WriteLine("User refresh-token: " + base64Token);
 
-        return (accessTokenStr, base64Token);
+        return new TokenResponse { AccessToken= accessTokenStr, RefreshToken= base64Token };
     }
 
-    public (string accessToken, string refreshToken) RefreshTokens(string refreshToken, GetTokenRequestModel model)
+    public TokenResponse RefreshTokens(string refreshToken, GetTokenRequestModel model)
     {
         if(!(ValidateRefreshToken(refreshToken) == model.Id))
             throw new SecurityTokenException("Token doesnt match current user's token");

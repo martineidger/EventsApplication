@@ -187,7 +187,6 @@ namespace EventsApp.Controllers
         public  IActionResult UpdateEvent(int id, [FromBody] UpdateEventModel newEvent)
         {
             var eventToUpdate = _mapper.Map<Event>(newEvent);
-            //var newEvent = _mapper.Map<Event>(newEventDto);
             _unitOfWork.BeginTransaction();
             if(_unitOfWork.EventRepo.UpdateEvent(id, eventToUpdate) == 0)
                 return NoContent();
@@ -209,7 +208,7 @@ namespace EventsApp.Controllers
             if (_unitOfWork.EventRepo.Delete(id))
             {
                 _unitOfWork.Commit();
-                return NoContent(); // 204 No Content
+                return NoContent(); 
             }
             else
             {

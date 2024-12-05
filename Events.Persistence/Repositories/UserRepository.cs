@@ -30,7 +30,7 @@ namespace Events.Persistence.Repositories
             _adminUserService = adminUserService;
         }
 
-        public (string accessToken, string refreshToken) Login(AuhorizationModel model)
+        public TokenResponse Login(AuhorizationModel model)
         {
             var user = _context.Users.FirstOrDefault(u => u.Email == model.Email && u.Password == model.Password);
             if(user == null)

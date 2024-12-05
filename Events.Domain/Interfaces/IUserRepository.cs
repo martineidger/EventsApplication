@@ -13,7 +13,7 @@ namespace Events.Domain.Interfaces
     public interface IUserRepository : IRepository<User>
     {
         public bool Register(RegistrationModel user);
-        public (string accessToken, string refreshToken) Login(AuhorizationModel model);
+        public TokenResponse Login(AuhorizationModel model);
         public User GetUserByName(string name);
         public void SetRefreshToken(string refreshToken, string email);
         
