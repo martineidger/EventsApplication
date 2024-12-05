@@ -6,8 +6,8 @@
 3. [SQL Server Express](https://www.microsoft.com/en-us/sql-server/sql-server-downloads)
 4. Клонируйте репозиторий:
   ```
-  git clone https://github.com/martineidger/EventsApplication-ASP-.Net.git
-  cd EventsApplication-ASP-.Net
+  git clone https://github.com/martineidger/EventsApplication.git
+  cd EventsApplication
   ```
 6. Откройте проект и восстановите зависимости `dotnet restore`
 7. Убедитесь, что файл appsettings.json настроен правильно для вашей среды (например, строки подключения к базе данных и другие параметры конфигурации)
