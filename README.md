@@ -13,6 +13,10 @@
 9. Запустите проект. Откройте страницу в браузере:
     [Swagger](https://localhost:7230/swagger/index.html)
 
-## В приложении присутствуют пользователи по умолчанию:
-#### Admin - admin1@mail.com / Admin123!
-#### User - user1@mail.com / User12345!
+## В приложении присутствуют пользователи по умолчанию
+#### Admin
+*Email*: admin1@mail.com 
+*Password*: Admin123!
+#### User 
+*Email*: user1@mail.com 
+*Password*: User12345!
