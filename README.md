@@ -14,9 +14,9 @@
     [Swagger](https://localhost:7230/swagger/index.html)
 
 ## В приложении присутствуют пользователи по умолчанию
-#### Admin
-*Email*: admin1@mail.com 
-*Password*: Admin123!
+### Admin
+**Email**: admin1@mail.com    
+**Password**: Admin123!
 #### User 
-*Email*: user1@mail.com 
-*Password*: User12345!
+**Email**: user1@mail.com    
+**Password**: User12345!
