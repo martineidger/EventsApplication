@@ -1,6 +1,6 @@
 # Web-API (back-end) приложение для работы с мероприятиями (C# ASP.Net Core)
 
-# **Инструкции к запуску проекта EventsApplication:**
+## **Инструкции к запуску проекта EventsApplication:**
 1. Для запуска необходима .NET SDK - проект написан на .net 8 ([скачайте и установите последнюю версию, если ее нет](https://dotnet.microsoft.com/en-us/download))
 2. IDE - Рекомендуется использовать Visual Studio, Visual Studio Code или JetBrains Rider. Для Visual Studio выберите рабочую нагрузку "ASP.NET и веб-разработка"
 3. [SQL Server Express](https://www.microsoft.com/en-us/sql-server/sql-server-downloads)
