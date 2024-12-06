@@ -52,8 +52,8 @@ namespace Events.Persistence.DataBase
             );
 
             modelBuilder.Entity<User>().HasData(
-                new User { Id = 1, Name = "Admin", Surname = "Admin", BirthDate = new DateOnly(1999, 12, 12), Email = "admin1@mail.com", Password = "Admin123!", Role = "Admin",  RegistrationDate = DateTime.Now },
-                new User { Id = 2, Name = "User", Surname = "User", BirthDate = new DateOnly(1999, 12, 12), Email = "user1@mail.com", Password = "User12345!", Role = "User", RegistrationDate = DateTime.Now }
+                new User { Id = 1, Name = "Admin", Surname = "Admin", BirthDate = new DateOnly(1999, 12, 12), Email = "admin1@mail.com", Password = "Admin123!", Role = "Admin",  RegistrationDate = new DateTime(2024, 12, 1) },
+                new User { Id = 2, Name = "User", Surname = "User", BirthDate = new DateOnly(1999, 12, 12), Email = "user1@mail.com", Password = "User12345!", Role = "User", RegistrationDate = new DateTime(2024, 12, 1) }
                 );
         }
 
