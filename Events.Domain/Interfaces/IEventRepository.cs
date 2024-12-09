@@ -13,13 +13,14 @@ namespace Events.Domain.Interfaces
     {
         public delegate void EventChangedDelegate(int id, string message);
         public event EventChangedDelegate EventChanged;
-        public int UpdateEvent(int curEventId, Event newEvent);
-        public bool RegisterUserOnEvent(int curEventId, int userId);
-        public bool RemoveUserFromEvent(int curEventId, int userId);
-        public Event GetEventByName(string name);
-        public IEnumerable<Event> GetEvents(ItemPageParameters parameters, DateTime dateTime);
-        public IEnumerable<Event> GetEvents(ItemPageParameters parameters, string place);
-        public IEnumerable<Event> GetEvents(ItemPageParameters parameters, EventCategory eventCategory);
+        public Task<int> UpdateEventAsync(int curEventId, Event newEvent);
+        public Task<Event> GetByIdAsync(int id);
+        public Task<bool> RegisterUserOnEventAsync(int curEventId, int userId);
+        public Task<bool> RemoveUserFromEventAsync(int curEventId, int userId);
+        public Task<Event> GetEventByNameAsync(string name);
+        public Task<IEnumerable<Event>> GetEventsAsync(ItemPageParameters parameters, DateTime dateTime);
+        public Task<IEnumerable<Event>> GetEventsAsync(ItemPageParameters parameters, string place);
+        public Task<IEnumerable<Event>> GetEventsAsync(ItemPageParameters parameters, EventCategory eventCategory);
         public void GenerateNotifications(int changedEventId, string message);
 
     }

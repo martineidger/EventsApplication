@@ -21,98 +21,47 @@ namespace Events.Persistence.Repositories
             _context = context;
         }
 
-        public virtual bool Add(T entity)
+        public virtual async Task<bool> AddAsync(T entity)
         {
-            _context.Set<T>().Add(entity);
-            return _context.SaveChanges() > 0;
+            await _context.Set<T>().AddAsync(entity);
+            return await _context.SaveChangesAsync() > 0;
         }
 
-        public bool Delete(int id)
+        public async Task<bool> DeleteAsync(int id)
         {
-            var entity = _context.Set<T>().Find(id);
+            var entity = await _context.Set<T>().FindAsync(id);
             if (entity != null)
             {
                 _context.Set<T>().Remove(entity);
-                return _context.SaveChanges() > 0;
+                return await _context.SaveChangesAsync() > 0;
             }
             return false;
         }
 
-        public IEnumerable<T> GetAll(ItemPageParameters parameters)
+        public async Task<IEnumerable<T>> GetAllAsync(ItemPageParameters parameters)
         {
-            var set = PagedList<T>.Paginate(_context.Set<T>().ToList(),
-                parameters.PageNumber, parameters.PageSize)
-                ?? throw new Exception($"No elements in the database");
-            return set;
+            var set = await _context.Set<T>()
+                .AsNoTracking()
+                .ToListAsync();
+
+            var pagedList = PagedList<T>.Paginate(set, parameters.PageNumber, parameters.PageSize)
+                ?? throw new Exception("No elements in the database");
+
+            return pagedList;
         }
 
-        public T GetById(int id)
+       /* public async Task<T> GetByIdAsync(int id)
         {
-            return _context.Set<T>().Find(id);
+            return await _context.Set<T>()
+                .AsNoTracking()
+                .FirstOrDefaultAsync(e => e.Id == id);
         }
-
-        public void Update(T entity)
+*/
+        public async Task UpdateAsync(T entity)
         {
             _context.Set<T>().Update(entity);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
-
-       /* public IEnumerable<T> Take(int count)
-        {
-            return _context.Set<T>().Take(count);
-        }
-
-        public IEnumerable<T> Skip(int count)
-        {
-            return _context.Set<T>().Skip(count);
-        }*/
-
-        /*public IEnumerable<T> GetWithPagination(int page, int size)
-        {
-            var skipCount = (page - 1) * size;
-            return _context.Set<T>().Skip(skipCount).Take(size);
-        }
-
-
-        public IEnumerable<T> Paginate(IEnumerable<T> source, int page, int size)
-        {
-            var skipCount = (page - 1) * size;
-            return source.Skip(skipCount).Take(size);
-        }*/
-
-        /*public async Task AddAsync(T entity)
-{
-   await _context.Set<T>().AddAsync(entity);
-   await _context.SaveChangesAsync();
-}
-
-public async Task DeleteAsync(int id)
-{
-   var entity = await _context.Set<T>().FindAsync(id);
-   if (entity != null)
-   {
-       _context.Set<T>().Remove(entity);
-       await _context.SaveChangesAsync();
-   }
-}
-
-public async Task UpdateAsync(T entity)
-{
-   _context.Set<T>().Update(entity);
-   await _context.SaveChangesAsync();
-}
-
-Task<T> IRepository<T>.GetByIdAsync(int id)
-{
-   return _context.Set<T>().FindAsync(id);
-}
-
-
-
-Task IRepository<T>.GetAllAsync()
-{
-   throw new NotImplementedException();
-}*/
 
     }
 }

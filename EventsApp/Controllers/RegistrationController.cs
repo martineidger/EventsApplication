@@ -66,18 +66,18 @@ namespace EventsApp.Controllers
         [HttpPost("refresh-token")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(User))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult RefreshToken([FromBody] string refreshToken)
+        public async Task<IActionResult> RefreshToken([FromBody] string refreshToken)
         { 
             byte[] bytes = Convert.FromBase64String(refreshToken);
             string jsonString = Encoding.UTF8.GetString(bytes);
 
             RefreshTokenModel refreshTokenModel = JsonConvert.DeserializeObject<RefreshTokenModel>(jsonString);
-            var tUser = _unitOfWork.UserRepo.GetById(Convert.ToInt32(refreshTokenModel.UserId));
+            var tUser = await _unitOfWork.UserRepo.GetByIdAsync(Convert.ToInt32(refreshTokenModel.UserId));
 
             if (!string.Equals(tUser.Token, refreshToken))
                 return BadRequest("Invalid refresh token: tokens aren't equals");
 
-            var newTokens = _tokenService.RefreshTokens(refreshToken,
+            var newToken = _tokenService.RefreshToken(refreshToken,
                 new GetTokenRequestModel()
                 {
                     Email = tUser.Email,
@@ -85,8 +85,8 @@ namespace EventsApp.Controllers
                     Role = tUser.Role
                 });
 
-            _unitOfWork.UserRepo.SetRefreshToken(newTokens.RefreshToken, tUser.Email);
-            return Ok(new { AccessToken = newTokens.AccessToken, RefreshToken = newTokens.RefreshToken });
+            //_unitOfWork.UserRepo.SetRefreshTokenAsync(newTokens.RefreshToken, tUser.Email);
+            return Ok(new { AccessToken = newToken });
         }
         #endregion
 
@@ -95,12 +95,12 @@ namespace EventsApp.Controllers
         [HttpPost("registration")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(User))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult Registration([FromBody] RegistrationModel user)
+        public async Task<IActionResult> Registration([FromBody] RegistrationModel user)
         {
             if (user == null)
                 return BadRequest("User cannot be null");
 
-            if (!_unitOfWork.UserRepo.Register(user))
+            if (!(await _unitOfWork.UserRepo.RegisterAsync(user)))
                 return BadRequest("Such user already exists");
 
             return Ok(new { User = user }); 
@@ -112,16 +112,16 @@ namespace EventsApp.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public IActionResult Login([FromBody] AuhorizationModel user)
+        public async Task<IActionResult> Login([FromBody] AuhorizationModel user)
         {
             if (user == null)
                 return BadRequest("User cannot be null");
 
-            var tokens = _unitOfWork.UserRepo.Login(user);
+            var tokens = await _unitOfWork.UserRepo.LoginAsync(user);
             if (tokens == null)
                 return Unauthorized("Invalid username or password");
 
-            _unitOfWork.UserRepo.SetRefreshToken(tokens.RefreshToken, user.Email);
+            _unitOfWork.UserRepo.SetRefreshTokenAsync(tokens.RefreshToken, user.Email);
             SetAccessTokenCookie(tokens.AccessToken);
 
             return Ok(new { AccesToken = tokens.AccessToken , RefreshToken = tokens.RefreshToken});

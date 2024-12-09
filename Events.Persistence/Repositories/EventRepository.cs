@@ -47,19 +47,19 @@ namespace Events.Persistence.Repositories
             _db.SaveChanges();
         }
        
-        public override bool Add(Event newEvent)
+        public override async Task<bool> AddAsync(Event newEvent)
         {
             if (_db.Events.Any(e => e.Name == newEvent.Name))
                 return false;
-            return base.Add(newEvent);
+            return await base.AddAsync(newEvent);
         }
 
-        public Event GetEventByName(string name)
+        public async Task<Event> GetEventByNameAsync(string name)
         {
-            return _db.Events.FirstOrDefault(e => e.Name == name) ?? throw new Exception($"No events with such name: {name}");
+            return await _db.Events.AsNoTracking().FirstOrDefaultAsync(e => e.Name == name) ?? throw new Exception($"No events with such name: {name}");
         }
 
-        public IEnumerable<Event> GetEvents(ItemPageParameters parameters, DateTime dateTime)
+        public async Task<IEnumerable<Event>> GetEventsAsync(ItemPageParameters parameters, DateTime dateTime)
         {
             var events = PagedList<Event>.Paginate(_db.Events.Where(e => e.EventTime == dateTime).ToList(),
                 parameters.PageNumber, parameters.PageSize)
@@ -67,7 +67,7 @@ namespace Events.Persistence.Repositories
             return events;
         }
 
-        public IEnumerable<Event> GetEvents(ItemPageParameters parameters, string place)
+        public async Task<IEnumerable<Event>> GetEventsAsync(ItemPageParameters parameters, string place)
         {
             var events = PagedList<Event>.Paginate(_db.Events.Where(e => e.Address == place).ToList(),
                 parameters.PageNumber, parameters.PageSize)
@@ -75,7 +75,7 @@ namespace Events.Persistence.Repositories
             return events;
         }
 
-        public IEnumerable<Event> GetEvents(ItemPageParameters parameters, EventCategory eventCategory)
+        public async Task<IEnumerable<Event>> GetEventsAsync(ItemPageParameters parameters, EventCategory eventCategory)
         {
             var events = PagedList<Event>.Paginate(_db.Events.Where(e => e.Category == eventCategory).ToList(), 
                 parameters.PageNumber, parameters.PageSize)
@@ -83,7 +83,7 @@ namespace Events.Persistence.Repositories
             return events;
         }
 
-        public bool RegisterUserOnEvent(int curEventId, int userId)
+        public async Task<bool> RegisterUserOnEventAsync(int curEventId, int userId)
         {
             var user = _db.Users.FirstOrDefault(u => u.Id == userId)?? throw new Exception($"No user with such ID: {userId}");
             var curEvent = _db.Events.FirstOrDefault(e => e.Id == curEventId) ?? throw new Exception($"No event with such ID :{curEventId}");
@@ -97,7 +97,7 @@ namespace Events.Persistence.Repositories
             else return false;
         }
 
-        public bool RemoveUserFromEvent(int curEventId, int userId)
+        public async Task<bool> RemoveUserFromEventAsync(int curEventId, int userId)
         {
             var user = _db.Users.FirstOrDefault(u => u.Id == userId) ?? throw new Exception($"No user with such ID: {userId}");
             var curEvent = _db.Events.FirstOrDefault(e => e.Id == curEventId) ?? throw new Exception($"No event with such ID :{curEventId}");
@@ -107,7 +107,7 @@ namespace Events.Persistence.Repositories
             return result;
         }
 
-        public int UpdateEvent(int curEventId, Event newEvent)
+        public async Task<int> UpdateEventAsync(int curEventId, Event newEvent)
         {
             if (_db.Events.Find(curEventId) == null)
                 throw new Exception($"No event with such ID :{curEventId}");
@@ -115,10 +115,6 @@ namespace Events.Persistence.Repositories
 
             _db.Events.Update(newEvent);
             var entry = _db.Entry(newEvent);
-            /*var modifiedProperties = entry.OriginalValues.Properties
-                .Where(p => entry.Property(p.Name).IsModified)
-                .Select(p => p.Name)
-                .ToList();*/
 
             var modifiedProperties = entry.OriginalValues.Properties
                 .Where(p => entry.Property(p.Name).IsModified)
@@ -132,36 +128,13 @@ namespace Events.Persistence.Repositories
             _db.SaveChanges();
             return modifiedProperties.Count;
         }
-            /*        private bool Update(Event source, UpdateEventModel target)
-            {
-                if (source == null || target == null) return false;
-                var changedProps = 0;
 
-                PropertyInfo[] properties = typeof(UpdateEventModel).GetProperties();
-
-                foreach (var property in properties)
-                {
-                    var targetValue = property.GetValue(target);
-                    var value = property.GetValue(source);
-                    if (targetValue != null &&
-                        !(targetValue is string str && string.IsNullOrEmpty(str) */
-            /*&&
-                                (property is not IList<User>)) && property.Name != "Id"*//*))
-                */
-            /*&& !Equals(targetValue, GetDefaultValue(property.PropertyType
-         * ))*//*
-                {
-                    property.SetValue(source, targetValue);
-                    changedProps++;
-                    Console.WriteLine(targetValue);
-                    EventChanged?.Invoke(source.Id, $"{property.Name} has been updated from {value} to {targetValue}.");
-                }
-            }
-            _db.SaveChanges();
-            return changedProps != 0;
+        public async Task<Event> GetByIdAsync(int id) 
+        {
+            return await _db.Events.AsNoTracking().FirstOrDefaultAsync(e => e.Id == id);
         }
-*/
-       
+        
+
     }
 }
 

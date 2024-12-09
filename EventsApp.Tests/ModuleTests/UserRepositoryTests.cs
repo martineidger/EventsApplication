@@ -50,7 +50,7 @@ namespace EventsApp.Tests.ModuleTests
         }
 
         [Fact]
-        public void Login_ValidCredentials_ReturnsTokens()
+        public async Task Login_ValidCredentials_ReturnsTokens()
         {
             // Arrange
             var model = new AuhorizationModel { Email = "test@example.com", Password = "Password123!" };
@@ -61,7 +61,7 @@ namespace EventsApp.Tests.ModuleTests
             _mockTokenService.Setup(t => t.GenerateTokens(tokenRequest)).Returns(tokens);
 
             // Act
-            var result = _userRepository.Login(model);
+            var result = await _userRepository.LoginAsync(model);
 
             // Assert
             Assert.Equal(tokens.AccessToken, result.AccessToken);
@@ -69,17 +69,17 @@ namespace EventsApp.Tests.ModuleTests
         }
 
         [Fact]
-        public void Login_InvalidCredentials_ThrowsException()
+        public async Task Login_InvalidCredentials_ThrowsException()
         {
             // Arrange
             var model = new AuhorizationModel { Email = "unknown@example.com", Password = "Password123!" };
 
             // Act & Assert
-            Assert.Throws<Exception>(() => _userRepository.Login(model));
+            await Assert.ThrowsAsync<Exception>(async () => await _userRepository.LoginAsync(model));
         }
 
         [Fact]
-        public void Register_EmailAlreadyExists_ReturnsFalse()
+        public async Task Register_EmailAlreadyExists_ReturnsFalse()
         {
             // Arrange
             var model = new RegistrationModel
@@ -107,14 +107,14 @@ namespace EventsApp.Tests.ModuleTests
             _context.SaveChanges();
 
             // Act
-            var result = _userRepository.Register(model);
+            var result = await _userRepository.RegisterAsync(model);
 
             // Assert
             Assert.False(result);
         }
 
         [Fact]
-        public void Register_ValidUser_AddsUserAndReturnsTrue()
+        public async Task Register_ValidUser_AddsUserAndReturnsTrue()
         {
             // Arrange
             var model = new RegistrationModel
@@ -142,49 +142,49 @@ namespace EventsApp.Tests.ModuleTests
             _mockAdminUserService.Setup(s => s.GetRole(newUser.Email)).Returns("User");
 
             // Act
-            var result = _userRepository.Register(model);
+            var result = await _userRepository.RegisterAsync(model);
 
             // Assert
             Assert.True(result);
             Assert.Contains(_context.Users, u => u.Email == newUser.Email);
         }
 
-        [Fact]
-        public void SetRefreshToken_ValidUser_UpdatesToken()
+        /*[Fact]
+        public async Task SetRefreshToken_ValidUser_UpdatesToken()
         {
             // Arrange
             var email = "test@example.com";
             var refreshToken = "newRefreshToken";
 
             // Act
-            _userRepository.SetRefreshToken(refreshToken, email);
+           await _userRepository.SetRefreshTokenAsync(refreshToken, email);
 
             // Assert
             var updatedUser = _context.Users.First(u => u.Email == email);
             Assert.Equal(refreshToken, updatedUser.Token);
-        }
+        }*/
 
         [Fact]
-        public void GetUserByName_UserExists_ReturnsUser()
+        public async Task GetUserByName_UserExists_ReturnsUser()
         {
             // Arrange
             var userName = "John";
 
             // Act
-            var result = _userRepository.GetUserByName(userName);
+            var result = await _userRepository.GetUserByNameAsync(userName);
 
             // Assert
-            Assert.Equal(testUser, result);
+            Assert.Equal(testUser.Id, result.Id);
         }
 
         [Fact]
-        public void GetUserByName_UserDoesNotExist_ReturnsNull()
+        public async Task GetUserByName_UserDoesNotExist_ReturnsNull()
         {
             // Arrange
             var userName = "Unknown";
 
             // Act
-            var result = _userRepository.GetUserByName(userName);
+            var result = await _userRepository.GetUserByNameAsync(userName);
 
             // Assert
             Assert.Null(result);

@@ -10,6 +10,6 @@ namespace Events.Authentications.Services.Intrfaces
     public interface ITokenService 
     {
         public TokenResponse GenerateTokens(GetTokenRequestModel model);
-        public TokenResponse RefreshTokens(string refreshToken, GetTokenRequestModel model);
+        public string RefreshToken(string refreshToken, GetTokenRequestModel model);
     }
 }

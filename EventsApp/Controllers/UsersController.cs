@@ -47,9 +47,9 @@ namespace EventsApp.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public IActionResult GetUsersFromEvent(int eventId)
+        public async Task<IActionResult> GetUsersFromEvent(int eventId)
         {
-            var curEvent = _unitOfWork.EventRepo.GetById(eventId);
+            var curEvent = await _unitOfWork.EventRepo.GetByIdAsync(eventId);
             if (curEvent == null)
             {
                 return NotFound("No such event");
@@ -68,9 +68,9 @@ namespace EventsApp.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public IActionResult GetByID(int id)
+        public async Task<IActionResult> GetByID(int id)
         {
-            var user = _unitOfWork.UserRepo.GetById(id);
+            var user = await _unitOfWork.UserRepo.GetByIdAsync(id);
             if (user == null)
             {
                 return NotFound("No such user");
@@ -84,9 +84,9 @@ namespace EventsApp.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Notification>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public IActionResult GetNotificationsList(int userId)
+        public async Task<IActionResult> GetNotificationsList(int userId)
         {
-            var user = _unitOfWork.UserRepo.GetById(userId);
+            var user = await _unitOfWork.UserRepo.GetByIdAsync(userId);
             if (user == null)
             {
                 return NotFound("No such user");
@@ -109,9 +109,9 @@ namespace EventsApp.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public IActionResult RegisterUserToEvent(int eventId, int userId)
+        public async Task<IActionResult> RegisterUserToEvent(int eventId, int userId)
         {
-            var success = _unitOfWork.EventRepo.RegisterUserOnEvent(eventId, userId);
+            var success = await _unitOfWork.EventRepo.RegisterUserOnEventAsync(eventId, userId);
             if (!success)
             {
                 return NotFound("Cannot register this user");
@@ -125,9 +125,9 @@ namespace EventsApp.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public IActionResult RemoveUserFromEvent(int eventId, int userId)
+        public async Task<IActionResult> RemoveUserFromEvent(int eventId, int userId)
         {
-            var success = _unitOfWork.EventRepo.RemoveUserFromEvent(eventId, userId);
+            var success = await _unitOfWork.EventRepo.RemoveUserFromEventAsync(eventId, userId);
             if (!success)
             {
                 return NotFound("Cannot remove this user from event");

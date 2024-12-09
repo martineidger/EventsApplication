@@ -10,12 +10,12 @@ namespace Events.Domain.Interfaces
     public interface IRepository<T> where T : class
     {
        
-        public T GetById(int id);
+        //public Task<T> GetByIdAsync(int id);
         
-        public IEnumerable<T> GetAll(ItemPageParameters parameters);
-        public bool Add(T entity);
-        public void Update(T entity);
-        public bool Delete(int id);
+        public Task<IEnumerable<T>> GetAllAsync(ItemPageParameters parameters);
+        public Task<bool> AddAsync(T entity);
+        public Task UpdateAsync(T entity);
+        public Task<bool> DeleteAsync(int id);
       
     }
 }

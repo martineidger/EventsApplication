@@ -30,9 +30,9 @@ namespace Events.Persistence.Repositories
             _adminUserService = adminUserService;
         }
 
-        public TokenResponse Login(AuhorizationModel model)
+        public async Task<TokenResponse> LoginAsync(AuhorizationModel model)
         {
-            var user = _context.Users.FirstOrDefault(u => u.Email == model.Email && u.Password == model.Password);
+            var user = await  _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email == model.Email && u.Password == model.Password);
             if(user == null)
             {
                 throw new Exception("Invalid credentials");
@@ -44,30 +44,35 @@ namespace Events.Persistence.Repositories
             return tokens;
         }
 
-        public bool Register(RegistrationModel user)
+        public async Task<bool> RegisterAsync(RegistrationModel user)
         {
-            if (_context.Users.Any(u => u.Email.Equals(user.Email)))
+            if (await _context.Users.AsNoTracking().AnyAsync(u => u.Email.Equals(user.Email)))
                 return false;
 
             var newUser = _mapper.Map<User>(user);
 
             newUser.Role = _adminUserService.GetRole(newUser.Email);
  
-            _context.Users.Add(newUser);
-            _context.SaveChanges();
+            await _context.Users.AddAsync(newUser);
+            await _context.SaveChangesAsync();
 
             return true;
         }
-        public void SetRefreshToken(string refreshToken, string email)
+        public async Task SetRefreshTokenAsync(string refreshToken, string email)
         {
-            var cUser = _context.Users.FirstOrDefault(u => u.Email == email);
+            var cUser = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email == email);
             cUser.Token = refreshToken;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public User GetUserByName(string name)
+        public async Task<User> GetUserByNameAsync(string name)
         {
-            return _context.Users.FirstOrDefault(u => u.Name == name);
-        }        
+            return await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Name == name);
+        }
+
+        public async Task<User> GetByIdAsync(int id)
+        {
+            return await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
+        }
     }
 }

@@ -49,9 +49,9 @@ namespace EventsApp.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public IActionResult Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            var sEvent = _unitOfWork.EventRepo.GetById(id);
+            var sEvent = await _unitOfWork.EventRepo.GetByIdAsync(id);
             if (sEvent == null)
             {
                 return NotFound();
@@ -62,9 +62,9 @@ namespace EventsApp.Controllers
         [HttpGet("allevents")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Event>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult GetAll([FromQuery] ItemPageParameters parameters)
+        public async Task<IActionResult> GetAll([FromQuery] ItemPageParameters parameters)
         {
-            var events = _unitOfWork.EventRepo.GetAll(parameters);
+            var events = await _unitOfWork.EventRepo.GetAllAsync(parameters);
             if (events == null || !events.Any())
                 return NotFound();
             return Ok(events);
@@ -73,9 +73,9 @@ namespace EventsApp.Controllers
         [HttpGet("byname")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Event))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult GetByName([FromQuery] string name)
+        public async  Task<IActionResult> GetByName([FromQuery] string name)
         {
-            var sEvent = _unitOfWork.EventRepo.GetEventByName(name);
+            var sEvent = await _unitOfWork.EventRepo.GetEventByNameAsync(name);
             if (sEvent == null)
             {
                 return NotFound();
@@ -86,11 +86,11 @@ namespace EventsApp.Controllers
         [HttpGet("bycategory")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Event>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult GetEventsByCategory([FromQuery] ItemPageParameters parameters, [FromQuery] string category)
+        public async Task<IActionResult> GetEventsByCategory([FromQuery] ItemPageParameters parameters, [FromQuery] string category)
         {
             if (Enum.TryParse(category, true, out EventCategory eventCategory))
             {
-                var events = _unitOfWork.EventRepo.GetEvents(parameters, eventCategory);
+                var events =  await _unitOfWork.EventRepo.GetEventsAsync(parameters, eventCategory);
                 return Ok(events);
             }
             else
@@ -102,9 +102,9 @@ namespace EventsApp.Controllers
         [HttpGet("bydate")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Event>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult GetEventsByDate([FromQuery] ItemPageParameters parameters, [FromQuery] DateTime date)
+        public async Task<IActionResult> GetEventsByDate([FromQuery] ItemPageParameters parameters, [FromQuery] DateTime date)
         {
-            var events = _unitOfWork.EventRepo.GetEvents(parameters, date);
+            var events = await _unitOfWork.EventRepo.GetEventsAsync(parameters, date);
             if (events != null && events.Any())
                 return Ok(events);
             else
@@ -114,9 +114,9 @@ namespace EventsApp.Controllers
         [HttpGet("byplace")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Event>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult GetEventsByPlace([FromQuery] ItemPageParameters parameters, [FromQuery] string place)
+        public async Task<IActionResult> GetEventsByPlace([FromQuery] ItemPageParameters parameters, [FromQuery] string place)
         {
-            var events = _unitOfWork.EventRepo.GetEvents(parameters, place);
+            var events = await _unitOfWork.EventRepo.GetEventsAsync(parameters, place);
             if (events != null && events.Any())
                 return Ok(events);
             else
@@ -131,7 +131,7 @@ namespace EventsApp.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public IActionResult AddEvent([FromForm] EventDTO eventData)
+        public async Task<IActionResult> AddEvent([FromForm] EventDTO eventData)
         {
             var valResults = _eventValidator.Validate(eventData);
             if (!valResults.IsValid)
@@ -168,7 +168,7 @@ namespace EventsApp.Controllers
             }
 
             _unitOfWork.BeginTransaction();
-            if(!_unitOfWork.EventRepo.Add(newEvent))
+            if(!(await _unitOfWork.EventRepo.AddAsync(newEvent)))
                 return BadRequest("Event with such name already exists");
             _unitOfWork.Commit();
 
@@ -184,14 +184,14 @@ namespace EventsApp.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public  IActionResult UpdateEvent(int id, [FromBody] UpdateEventModel newEvent)
+        public async Task<IActionResult> UpdateEvent(int id, [FromBody] UpdateEventModel newEvent)
         {
             var eventToUpdate = _mapper.Map<Event>(newEvent);
             _unitOfWork.BeginTransaction();
-            if(_unitOfWork.EventRepo.UpdateEvent(id, eventToUpdate) == 0)
+            if(await _unitOfWork.EventRepo.UpdateEventAsync(id, eventToUpdate) == 0)
                 return NoContent();
             _unitOfWork.Commit();
-            return Ok(_unitOfWork.EventRepo.GetById(id));
+            return Ok(_unitOfWork.EventRepo.GetByIdAsync(id));
         }
         #endregion
 
@@ -202,10 +202,10 @@ namespace EventsApp.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
-        public IActionResult DeleteEvent(int id)
+        public async Task<IActionResult> DeleteEvent(int id)
         {
             _unitOfWork.BeginTransaction();
-            if (_unitOfWork.EventRepo.Delete(id))
+            if (await _unitOfWork.EventRepo.DeleteAsync(id))
             {
                 _unitOfWork.Commit();
                 return NoContent(); 

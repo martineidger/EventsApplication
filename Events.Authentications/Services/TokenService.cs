@@ -61,12 +61,29 @@ public class TokenService : ITokenService
         return new TokenResponse { AccessToken= accessTokenStr, RefreshToken= base64Token };
     }
 
-    public TokenResponse RefreshTokens(string refreshToken, GetTokenRequestModel model)
+    public string RefreshToken(string refreshToken, GetTokenRequestModel model)
     {
         if(!(ValidateRefreshToken(refreshToken) == model.Id))
             throw new SecurityTokenException("Token doesnt match current user's token");
 
-        return GenerateTokens(model);
+        var key = System.Text.Encoding.ASCII.GetBytes(secretKey);
+        var accessTokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, model.Id.ToString()),
+                new Claim(ClaimTypes.Email, model.Email),
+                new Claim(ClaimTypes.Role, model.Role)
+            }),
+            Expires = DateTime.UtcNow.AddMinutes(accessTokenLifeMin),
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+        };
+
+        var accessToken = tokenHandler.CreateToken(accessTokenDescriptor);
+        var accessTokenStr = tokenHandler.WriteToken(accessToken);
+
+        return accessTokenStr;
+        //return GenerateTokens(model);
     }
 
     private int ValidateRefreshToken(string refreshToken)

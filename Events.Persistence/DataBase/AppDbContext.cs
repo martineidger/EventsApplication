@@ -46,13 +46,13 @@ namespace Events.Persistence.DataBase
             );
 
             modelBuilder.Entity<Event>().HasData(
-                new Event { Id = 1, Address = "123 Elm Street, Springfield, IL 62704, USA", Category = EventCategory.Concert, Description = "Join our workshop to learn about modern digital marketing strategies. Get hands-on experience with practical tasks and expert tips.", EventTime = new DateTime(2025, 12,12), MaxLimit = 20, Name = "Digital Marketing Workshop" },
+                new Event { Id = 1, Address = "123 Elm Street, Springfield, IL 62704, USA", Category = EventCategory.Concert, Description = "Join our workshop to learn about modern digital marketing strategies. Get hands-on experience with practical tasks and expert tips.", EventTime = new DateTime(2025, 12, 12), MaxLimit = 20, Name = "Digital Marketing Workshop" },
                 new Event { Id = 2, Address = "456 Maple Avenue, Los Angeles, CA 90001, USA", Category = EventCategory.Lecture, Description = "Don’t miss a live performance by a local rock band at a cozy bar! Great atmosphere and fantastic music guaranteed.", EventTime = new DateTime(2012, 12, 12), MaxLimit = 30, Name = " Local Band Concert" },
                 new Event { Id = 3, Address = "789 Oak Lane, New York, NY 10001, USA", Category = EventCategory.Exhibition, Description = "Come to the street food festival and enjoy a variety of dishes from the best local chefs. Great food and live music await you!", EventTime = new DateTime(2024, 12, 12), MaxLimit = 40, Name = "Street Food Festival" }
             );
 
             modelBuilder.Entity<User>().HasData(
-                new User { Id = 1, Name = "Admin", Surname = "Admin", BirthDate = new DateOnly(1999, 12, 12), Email = "admin1@mail.com", Password = "Admin123!", Role = "Admin",  RegistrationDate = new DateTime(2024, 12, 1) },
+                new User { Id = 1, Name = "Admin", Surname = "Admin", BirthDate = new DateOnly(1999, 12, 12), Email = "admin1@mail.com", Password = "Admin123!", Role = "Admin", RegistrationDate = new DateTime(2024, 12, 1) },
                 new User { Id = 2, Name = "User", Surname = "User", BirthDate = new DateOnly(1999, 12, 12), Email = "user1@mail.com", Password = "User12345!", Role = "User", RegistrationDate = new DateTime(2024, 12, 1) }
                 );
         }
