@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using UseCases.Events;
+using UseCases.Users;
 
 namespace EventsApp.Controllers
 {
@@ -20,23 +22,38 @@ namespace EventsApp.Controllers
     public class UsersController : Controller
     {
         #region constructor
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
-        private readonly IAdminUserService _adminUserService;
         private readonly IValidator<RegistrationModel> _regValidator;
         private readonly IValidator<AuhorizationModel> _loginValidator;
-        private readonly string _secretKey;
 
-        public UsersController(IMapper mapper, IUnitOfWork unitOfWork,
-            IAdminUserService adminUserService, IConfiguration configuration,
-            IValidator<RegistrationModel> reg, IValidator<AuhorizationModel> login)
+        private readonly GetNotificationsListUseCase getNotificationsListUseCase;
+        private readonly GetUserByIdUseCase getUserByIdUseCase;
+        private readonly GetUserByNameUseCase getUserByNameUseCase;
+        private readonly GetUsersFromEventUseCase getUsersFromEventUseCase;
+
+        private readonly FollowUserUseCase followUserUseCase;
+        private readonly UnfollowUserUseCase unfollowUserUseCase;
+
+        public UsersController(
+            IValidator<RegistrationModel> registrationValidator, 
+            IValidator<AuhorizationModel> loginValidator, 
+            GetUsersFromEventUseCase getUsersFromEventUseCase,
+            GetUserByNameUseCase getUserByNameUseCase, 
+            GetUserByIdUseCase getUserByIdUseCase,
+            GetNotificationsListUseCase getNotificationsListUseCase,
+            FollowUserUseCase followUserUseCase,
+            UnfollowUserUseCase unfollowUserUseCase
+           )
         {
-            _unitOfWork = unitOfWork;
-            _mapper = mapper;
-            _adminUserService = adminUserService;
-            _loginValidator = login;
-            _regValidator = reg;
-            _secretKey = configuration.GetValue<string>("ApiSettings:Secret");
+            _loginValidator = loginValidator;
+            _regValidator = registrationValidator;
+
+            this.getNotificationsListUseCase = getNotificationsListUseCase;
+            this.getUserByIdUseCase = getUserByIdUseCase;
+            this.getUserByNameUseCase = getUserByNameUseCase;
+            this.getUsersFromEventUseCase = getUsersFromEventUseCase;
+
+            this.followUserUseCase = followUserUseCase;
+            this.unfollowUserUseCase = unfollowUserUseCase;
         }
         #endregion
 
@@ -49,17 +66,8 @@ namespace EventsApp.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> GetUsersFromEvent(int eventId)
         {
-            var curEvent = await _unitOfWork.EventRepo.GetByIdAsync(eventId);
-            if (curEvent == null)
-            {
-                return NotFound("No such event");
-            }
-            var usersList = curEvent.GetUsersFromEvent();
-            if (usersList == null || !usersList.Any())
-            {
-                return NotFound($"No subscribed users for this event: {curEvent.Name}");
-            }
-            return Ok(usersList);
+            
+            return Ok(await getUsersFromEventUseCase.ExecuteAsync(eventId));
         }
 
         [Authorize(Policy = "AdminOnly")]
@@ -70,12 +78,8 @@ namespace EventsApp.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         public async Task<IActionResult> GetByID(int id)
         {
-            var user = await _unitOfWork.UserRepo.GetByIdAsync(id);
-            if (user == null)
-            {
-                return NotFound("No such user");
-            }
-            return Ok(user);
+            
+            return Ok(await getUserByIdUseCase.ExecuteAsync(id));
         }
 
         [Authorize]
@@ -84,20 +88,10 @@ namespace EventsApp.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Notification>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetNotificationsList(int userId)
+        public async Task<IActionResult> GetNotificationsList(int id)
         {
-            var user = await _unitOfWork.UserRepo.GetByIdAsync(userId);
-            if (user == null)
-            {
-                return NotFound("No such user");
-            }
 
-            var notificationsList = user.ShowNotifications();
-            if (notificationsList == null || !notificationsList.Any())
-            {
-                return NotFound($"No notifications for this user: {user.Name}");
-            }
-            return Ok(notificationsList);
+            return Ok(await getNotificationsListUseCase.ExecuteAsync(id));
         }
         #endregion
 
@@ -111,12 +105,8 @@ namespace EventsApp.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> RegisterUserToEvent(int eventId, int userId)
         {
-            var success = await _unitOfWork.EventRepo.RegisterUserOnEventAsync(eventId, userId);
-            if (!success)
-            {
-                return NotFound("Cannot register this user");
-            }
-            return Ok(success);
+            await followUserUseCase.ExecuteAsync(eventId, userId);
+            return Ok();
         }
 
         [Authorize]
@@ -127,12 +117,8 @@ namespace EventsApp.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> RemoveUserFromEvent(int eventId, int userId)
         {
-            var success = await _unitOfWork.EventRepo.RemoveUserFromEventAsync(eventId, userId);
-            if (!success)
-            {
-                return NotFound("Cannot remove this user from event");
-            }
-            return Ok(success);
+            await unfollowUserUseCase.ExecuteAsync(eventId, userId);
+            return Ok();
         }
         #endregion
 

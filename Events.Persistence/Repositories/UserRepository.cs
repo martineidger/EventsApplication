@@ -19,18 +19,18 @@ namespace Events.Persistence.Repositories
     public class UserRepository : Repository<User>, IUserRepository
     {
         private readonly AppDbContext _context;
-        private readonly ITokenService _tokenService;
+        /*private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
-        private readonly IAdminUserService _adminUserService;
-        public UserRepository(AppDbContext context, ITokenService tokenService, IMapper mapper, IAdminUserService adminUserService) : base(context)
+        private readonly IAdminUserService _adminUserService;*/
+        public UserRepository(AppDbContext context/*, ITokenService tokenService, IMapper mapper, IAdminUserService adminUserService*/) : base(context)
         {
             _context = context;
-            _tokenService = tokenService;
+            /*_tokenService = tokenService;
             _mapper = mapper;
-            _adminUserService = adminUserService;
+            _adminUserService = adminUserService;*/
         }
 
-        public async Task<TokenResponse> LoginAsync(AuhorizationModel model)
+        /*public async Task<TokenResponse> LoginAsync(AuhorizationModel model)
         {
             var user = await  _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email == model.Email && u.Password == model.Password);
             if(user == null)
@@ -57,17 +57,22 @@ namespace Events.Persistence.Repositories
             await _context.SaveChangesAsync();
 
             return true;
-        }
-        public async Task SetRefreshTokenAsync(string refreshToken, string email)
+        }*/
+        /*public async Task SetRefreshTokenAsync(string refreshToken, string email)
         {
             var cUser = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email == email);
-            cUser.Token = refreshToken;
+            cUser.Token = refreshToken; 
             await _context.SaveChangesAsync();
-        }
+        }*/
 
         public async Task<User> GetUserByNameAsync(string name)
         {
             return await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Name == name);
+        }
+
+        public async Task<User> GetUserByEmailAsync(string email)
+        {
+            return await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email == email);
         }
 
         public async Task<User> GetByIdAsync(int id)

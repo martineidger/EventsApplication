@@ -37,6 +37,11 @@ namespace Events.Persistence.Repositories
             await _db.CommitAsync();
         }
 
+        public async Task SaveChangesAsync()
+        {
+            await _db.SaveChangesAsync();
+        }
+
         public void Dispose()
         {
             _db.Dispose();

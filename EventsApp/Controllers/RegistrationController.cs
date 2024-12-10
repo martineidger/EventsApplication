@@ -51,7 +51,7 @@ namespace EventsApp.Controllers
         #endregion
 
         #region tokens
-        private void SetAccessTokenCookie(string accessToken)
+        private void SetCookie(string cookieName, string cookieValue)
         {
             var cookieOptions = new CookieOptions
             {
@@ -61,7 +61,7 @@ namespace EventsApp.Controllers
                 Expires = DateTimeOffset.UtcNow.AddMinutes(30) 
             };
 
-            Response.Cookies.Append("AccessToken", accessToken, cookieOptions);
+            Response.Cookies.Append(cookieName, cookieValue, cookieOptions);
         }
         [HttpPost("refresh-token")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(User))]
@@ -97,11 +97,7 @@ namespace EventsApp.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Registration([FromBody] RegistrationModel user)
         {
-            if (user == null)
-                return BadRequest("User cannot be null");
-
-            if (!(await _unitOfWork.UserRepo.RegisterAsync(user)))
-                return BadRequest("Such user already exists");
+            
 
             return Ok(new { User = user }); 
         }

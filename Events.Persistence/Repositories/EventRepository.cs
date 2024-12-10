@@ -14,6 +14,7 @@ using Duende.IdentityServer.Models;
 using System.Drawing;
 using Events.DTOs.HelperModels.Pagination;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Events.Persistence.Repositories
 {
@@ -47,86 +48,38 @@ namespace Events.Persistence.Repositories
             _db.SaveChanges();
         }
        
-        public override async Task<bool> AddAsync(Event newEvent)
-        {
-            if (_db.Events.Any(e => e.Name == newEvent.Name))
-                return false;
-            return await base.AddAsync(newEvent);
-        }
 
         public async Task<Event> GetEventByNameAsync(string name)
         {
-            return await _db.Events.AsNoTracking().FirstOrDefaultAsync(e => e.Name == name) ?? throw new Exception($"No events with such name: {name}");
+            return await _db.Events.AsNoTracking().FirstOrDefaultAsync(e => e.Name == name);
         }
 
-        public async Task<IEnumerable<Event>> GetEventsAsync(ItemPageParameters parameters, DateTime dateTime)
+        public async Task<IEnumerable<Event>> GetEventsAsync(DateTime dateTime)
         {
-            var events = PagedList<Event>.Paginate(_db.Events.Where(e => e.EventTime == dateTime).ToList(),
+            /*var events = PagedList<Event>.Paginate(.ToList(),
                 parameters.PageNumber, parameters.PageSize)
-                ?? throw new Exception($"No events on such date and time: {dateTime.ToLocalTime}");
-            return events;
+                ?? throw new Exception($"No events on such date and time: {dateTime.ToLocalTime}");*/
+            return _db.Events.AsNoTracking().Where(e => e.EventTime == dateTime);
         }
 
-        public async Task<IEnumerable<Event>> GetEventsAsync(ItemPageParameters parameters, string place)
+        public async Task<IEnumerable<Event>> GetEventsAsync(string place)
         {
-            var events = PagedList<Event>.Paginate(_db.Events.Where(e => e.Address == place).ToList(),
-                parameters.PageNumber, parameters.PageSize)
-                ?? throw new Exception($"No events on such place: {place}");
-            return events;
+            return await _db.Events.AsNoTracking().Where(e => e.Address == place).ToListAsync();
         }
 
-        public async Task<IEnumerable<Event>> GetEventsAsync(ItemPageParameters parameters, EventCategory eventCategory)
+        public async Task<IEnumerable<Event>> GetEventsAsync(EventCategory eventCategory)
         {
-            var events = PagedList<Event>.Paginate(_db.Events.Where(e => e.Category == eventCategory).ToList(), 
-                parameters.PageNumber, parameters.PageSize)
-                ?? throw new Exception($"No events in this category: {eventCategory}");
-            return events;
+            return await _db.Events.Where(e => e.Category == eventCategory).ToListAsync();
         }
 
-        public async Task<bool> RegisterUserOnEventAsync(int curEventId, int userId)
+        public EntityEntry<Event> Update(Event newEvent)
         {
-            var user = _db.Users.FirstOrDefault(u => u.Id == userId)?? throw new Exception($"No user with such ID: {userId}");
-            var curEvent = _db.Events.FirstOrDefault(e => e.Id == curEventId) ?? throw new Exception($"No event with such ID :{curEventId}");
-
-            if (curEvent.CanRegisterOnEvent())
-            {
-                curEvent.Users.Add(user);
-                _db.SaveChanges();
-                return true;
-            }
-            else return false;
+            _db.Update(newEvent);
+            return _db.Entry(newEvent);
         }
-
-        public async Task<bool> RemoveUserFromEventAsync(int curEventId, int userId)
+        public void OnEventChanged(int id, string message)
         {
-            var user = _db.Users.FirstOrDefault(u => u.Id == userId) ?? throw new Exception($"No user with such ID: {userId}");
-            var curEvent = _db.Events.FirstOrDefault(e => e.Id == curEventId) ?? throw new Exception($"No event with such ID :{curEventId}");
-
-            var result = curEvent.Users.Remove(user);
-            _db.SaveChanges();
-            return result;
-        }
-
-        public async Task<int> UpdateEventAsync(int curEventId, Event newEvent)
-        {
-            if (_db.Events.Find(curEventId) == null)
-                throw new Exception($"No event with such ID :{curEventId}");
-            newEvent.Id = curEventId;
-
-            _db.Events.Update(newEvent);
-            var entry = _db.Entry(newEvent);
-
-            var modifiedProperties = entry.OriginalValues.Properties
-                .Where(p => entry.Property(p.Name).IsModified)
-                .ToDictionary(p => p.Name, p => entry.Property(p.Name).CurrentValue);
-
-            foreach(var property in modifiedProperties)
-            {
-                EventChanged?.Invoke(curEventId, $"{property.Key} has been updated from to {property.Value}.");
-            }
-
-            _db.SaveChanges();
-            return modifiedProperties.Count;
+            EventChanged?.Invoke(id, message);
         }
 
         public async Task<Event> GetByIdAsync(int id) 

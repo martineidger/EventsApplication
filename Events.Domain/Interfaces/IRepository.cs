@@ -12,10 +12,10 @@ namespace Events.Domain.Interfaces
        
         //public Task<T> GetByIdAsync(int id);
         
-        public Task<IEnumerable<T>> GetAllAsync(ItemPageParameters parameters);
-        public Task<bool> AddAsync(T entity);
-        public Task UpdateAsync(T entity);
-        public Task<bool> DeleteAsync(int id);
+        public Task<IEnumerable<T>> GetAllAsync();
+        public Task AddAsync(T entity);
+        //public Task UpdateAsync(T entity);
+        public Task Delete(T entity);
       
     }
 }

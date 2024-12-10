@@ -25,6 +25,7 @@
     <ProjectReference Include="..\Events.DTOs\Events.DTOs.csproj" />
     <ProjectReference Include="..\Events.Mappers\Events.Mappers.csproj" />
     <ProjectReference Include="..\Events.Persistence\Events.Persistence.csproj" />
+    <ProjectReference Include="..\UseCases\UseCases.csproj" />
     <ProjectReference Include="..\ValidationRules\Events.ValidationRules.csproj" />
   </ItemGroup>
 

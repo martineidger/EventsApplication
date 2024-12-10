@@ -16,6 +16,7 @@ namespace Events.Domain.Interfaces
         void Rollback();
         Task? CommitAsync();
         Task? RollbackAsync();
+        Task SaveChangesAsync();
 
     }
 }

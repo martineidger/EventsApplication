@@ -3,6 +3,7 @@ using Events.Domain.Entities;
 using Events.Domain.Interfaces;
 using Events.DTOs.HelperModels.Pagination;
 using Events.Persistence.DataBase;
+using IdentityModel;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -21,47 +22,40 @@ namespace Events.Persistence.Repositories
             _context = context;
         }
 
-        public virtual async Task<bool> AddAsync(T entity)
+        public async Task AddAsync(T entity)
         {
             await _context.Set<T>().AddAsync(entity);
-            return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<bool> DeleteAsync(int id)
+        public async Task Delete(T entity)
         {
-            var entity = await _context.Set<T>().FindAsync(id);
+            /*var entity = await _context.Set<T>().FindAsync(id);
             if (entity != null)
             {
                 _context.Set<T>().Remove(entity);
                 return await _context.SaveChangesAsync() > 0;
             }
-            return false;
+            return false;*/
+            //var entity = await _context.Set<T>().FindAsync(id);
+            _context.Set<T>().Remove(entity);
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync(ItemPageParameters parameters)
+        public async Task<IEnumerable<T>> GetAllAsync()
         {
-            var set = await _context.Set<T>()
-                .AsNoTracking()
-                .ToListAsync();
 
-            var pagedList = PagedList<T>.Paginate(set, parameters.PageNumber, parameters.PageSize)
-                ?? throw new Exception("No elements in the database");
+            /*var pagedList = PagedList<T>.Paginate(set, parameters.PageNumber, parameters.PageSize)
+                ?? throw new Exception("No elements in the database");*/
 
-            return pagedList;
+            return await _context.Set<T>().AsNoTracking().ToListAsync();
         }
 
-       /* public async Task<T> GetByIdAsync(int id)
-        {
-            return await _context.Set<T>()
-                .AsNoTracking()
-                .FirstOrDefaultAsync(e => e.Id == id);
-        }
-*/
-        public async Task UpdateAsync(T entity)
+        
+
+        /*public async Task UpdateAsync(T entity)
         {
             _context.Set<T>().Update(entity);
             await _context.SaveChangesAsync();
-        }
+        }*/
 
     }
 }
